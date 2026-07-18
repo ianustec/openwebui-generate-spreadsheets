@@ -1,0 +1,165 @@
+{
+  "title": "Q3 Budget Pack — FY 2026",
+  "author": "Northwind Finance",
+  "template": "financial",
+  "theme": {
+    "accent": "#1E2761",
+    "font": "Calibri"
+  },
+  "sheets": [
+    {
+      "name": "Assumptions",
+      "kind": "inputs",
+      "title": "Key assumptions",
+      "legend": "Yellow cells with blue text are inputs — edit these. Other sheets reference them with formulas.",
+      "items": [
+        {
+          "label": "Revenue growth",
+          "value": 0.08,
+          "format": "percent",
+          "unit": "%",
+          "notes": "YoY",
+          "comment": "Source: board pack Q2"
+        },
+        {
+          "label": "Gross margin target",
+          "value": 0.58,
+          "format": "percent",
+          "unit": "%"
+        },
+        {
+          "label": "Tax rate",
+          "value": 0.24,
+          "format": "percent",
+          "unit": "%"
+        },
+        {
+          "label": "Headcount",
+          "value": 42,
+          "format": "integer",
+          "unit": "FTE"
+        }
+      ]
+    },
+    {
+      "name": "P&L",
+      "kind": "table",
+      "title": "Profit & Loss — quarterly",
+      "table": {
+        "name": "PnL",
+        "columns": [
+          { "key": "line", "header": "Line item", "width": 28 },
+          { "key": "q1", "header": "Q1", "format": "currency", "width": 14 },
+          { "key": "q2", "header": "Q2", "format": "currency", "width": 14 },
+          { "key": "q3", "header": "Q3", "format": "currency", "width": 14 },
+          {
+            "key": "total",
+            "header": "Total",
+            "format": "currency",
+            "width": 14,
+            "formula": "=SUM([{q1}]:[{q3}])"
+          }
+        ],
+        "rows": [
+          { "line": "Revenue", "q1": 120000, "q2": 135000, "q3": 148000 },
+          { "line": "COGS", "q1": 48000, "q2": 52000, "q3": 56000 },
+          { "line": "Gross profit", "q1": 72000, "q2": 83000, "q3": 92000 },
+          { "line": "OpEx", "q1": 30000, "q2": 31000, "q3": 33000 },
+          { "line": "Operating income", "q1": 42000, "q2": 52000, "q3": 59000 }
+        ],
+        "excel_table": true,
+        "freeze": "A2",
+        "auto_filter": true,
+        "totals_row": false,
+        "conditional_formatting": [
+          { "type": "data_bar", "column": "q1", "color": "2E5AAC" },
+          { "type": "data_bar", "column": "q2", "color": "2E5AAC" },
+          { "type": "data_bar", "column": "q3", "color": "2E5AAC" }
+        ],
+        "validation": [
+          {
+            "column": "line",
+            "type": "list",
+            "options": [
+              "Revenue",
+              "COGS",
+              "Gross profit",
+              "OpEx",
+              "Operating income",
+              "Other"
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "name": "By region",
+      "kind": "matrix",
+      "title": "Revenue by region",
+      "headers": ["Region", "Q1", "Q2", "Q3"],
+      "columns": [
+        { "key": "region", "header": "Region", "format": "text", "width": 18 },
+        { "key": "q1", "header": "Q1", "format": "currency" },
+        { "key": "q2", "header": "Q2", "format": "currency" },
+        { "key": "q3", "header": "Q3", "format": "currency" }
+      ],
+      "rows": [
+        { "region": "EMEA", "q1": 52000, "q2": 58000, "q3": 61000 },
+        { "region": "Americas", "q1": 40000, "q2": 45000, "q3": 51000 },
+        { "region": "APAC", "q1": 28000, "q2": 32000, "q3": 36000 }
+      ],
+      "excel_table": true
+    },
+    {
+      "name": "Charts",
+      "kind": "mixed",
+      "blocks": [
+        {
+          "kind": "kpi_row",
+          "title": "Highlights",
+          "stats": [
+            {
+              "label": "YTD revenue",
+              "value": 403000,
+              "format": "currency",
+              "change": "+12% YoY"
+            },
+            {
+              "label": "Gross margin",
+              "value": 0.61,
+              "format": "percent",
+              "change": "+2 pp"
+            },
+            {
+              "label": "Op. income",
+              "value": 153000,
+              "format": "currency"
+            }
+          ]
+        },
+        {
+          "kind": "chart",
+          "chart_type": "bar",
+          "title": "Revenue by quarter",
+          "labels": ["Q1", "Q2", "Q3"],
+          "values": [120000, 135000, 148000],
+          "anchor": "A8"
+        },
+        {
+          "kind": "chart",
+          "chart_type": "doughnut",
+          "title": "Revenue mix by region (Q3)",
+          "labels": ["EMEA", "Americas", "APAC"],
+          "values": [61000, 51000, 36000],
+          "anchor": "J8"
+        },
+        {
+          "kind": "notes",
+          "level": "info",
+          "title": "How to use this workbook",
+          "text": "Edit yellow input cells on the Assumptions sheet. P&L totals are live Excel formulas (=SUM). Open in Excel or LibreOffice to recalculate."
+        }
+      ]
+    }
+  ]
+}

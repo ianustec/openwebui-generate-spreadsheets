@@ -1,0 +1,7 @@
+__pycache__/
+*.pyc
+*.xlsx
+!examples/demo_budget.xlsx
+*.pdf
+.venv/
+.DS_Store
