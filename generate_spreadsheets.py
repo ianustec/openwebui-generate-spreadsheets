@@ -6,7 +6,7 @@ funding_url: https://github.com/ianustec
 description: Generate high-quality native Excel (.xlsx) workbooks from a JSON spec - multi-sheet, Excel Tables, live formulas, charts, conditional formatting
 requirements: openpyxl, pydantic
 required_open_webui_version: 0.4.0
-version: 1.0.0
+version: 1.0.1
 license: MIT
 """
 
@@ -575,6 +575,7 @@ def _render_table_at(
     start_col: int = 1,
     max_rows: int = 5000,
     warnings: list,
+    table_names: Optional[set] = None,
 ) -> dict:
     """Render a table. Returns metadata: {range, header_row, data_start, data_end, cols, name}."""
     columns = _normalize_columns(table_spec.get("columns") or [])
@@ -742,18 +743,32 @@ def _render_table_at(
                 is_formula=isinstance(cell.value, str) and str(cell.value).startswith("="),
             )
 
-    # Excel Table
+    # Excel Table — cover HEADER + DATA only.
+    # Never set totalsRowCount: Excel (especially macOS) repairs/rejects Tables
+    # that declare a totals row without per-column totalsRowFormula/Label.
+    # Totals are written as a normal styled row *below* the Table range.
     table_name = table_spec.get("name") or table_spec.get("table_name")
+    table_end_row = data_end if rows else header_row
     ref = (
         f"{_col_letter(start_col)}{header_row}:"
-        f"{_col_letter(start_col + n_cols - 1)}{end_row}"
+        f"{_col_letter(start_col + n_cols - 1)}{table_end_row}"
     )
     if use_table and rows:
+        used = table_names if table_names is not None else set()
         safe_name = re.sub(r"[^A-Za-z0-9_]", "_", str(table_name or f"Table{header_row}"))
+        safe_name = safe_name.strip("_") or f"Table{header_row}"
         if safe_name[0].isdigit():
             safe_name = "T_" + safe_name
+        # displayName must be unique workbook-wide
+        base_name = safe_name[:240]
+        candidate = base_name
+        n = 2
+        while candidate.lower() in {x.lower() for x in used}:
+            candidate = f"{base_name}_{n}"
+            n += 1
+        used.add(candidate)
         try:
-            tab = Table(displayName=safe_name[:255], ref=ref)
+            tab = Table(displayName=candidate, ref=ref)
             style = TableStyleInfo(
                 name="TableStyleMedium2",
                 showFirstColumn=False,
@@ -762,22 +777,15 @@ def _render_table_at(
                 showColumnStripes=False,
             )
             tab.tableStyleInfo = style
-            if totals_row:
-                tab.totalsRowCount = 1
+            # Do not set totalsRowCount — totals sit as a normal row below the Table.
             ws.add_table(tab)
         except Exception:
             traceback.print_exc()
-            # Fall back to auto filter only
+            warnings.append(f"Excel Table '{candidate}' could not be created; using auto-filter.")
             if auto_filter:
-                ws.auto_filter.ref = (
-                    f"{_col_letter(start_col)}{header_row}:"
-                    f"{_col_letter(start_col + n_cols - 1)}{data_end}"
-                )
+                ws.auto_filter.ref = ref
     elif auto_filter and rows:
-        ws.auto_filter.ref = (
-            f"{_col_letter(start_col)}{header_row}:"
-            f"{_col_letter(start_col + n_cols - 1)}{data_end}"
-        )
+        ws.auto_filter.ref = ref
 
     if freeze:
         try:
@@ -1213,6 +1221,7 @@ def _render_matrix(
     start_row: int,
     max_rows: int,
     warnings: list,
+    table_names: Optional[set] = None,
 ) -> int:
     """Static pivot-like matrix: headers[] + rows[][] with optional row labels."""
     table = {
@@ -1243,6 +1252,7 @@ def _render_matrix(
         start_row=start_row,
         max_rows=max_rows,
         warnings=warnings,
+        table_names=table_names,
     )
     return meta.get("end_row", start_row) + 1
 
@@ -1411,6 +1421,7 @@ def _render_blocks(
     defaults: dict,
     max_rows: int,
     warnings: list,
+    table_names: Optional[set] = None,
 ) -> None:
     cursor = 1
     last_table_meta = None
@@ -1429,6 +1440,7 @@ def _render_blocks(
                     start_row=cursor,
                     max_rows=max_rows,
                     warnings=warnings,
+                    table_names=table_names,
                 )
                 last_table_meta = meta
                 cursor = meta.get("end_row", cursor) + 2
@@ -1441,6 +1453,7 @@ def _render_blocks(
                     start_row=cursor,
                     max_rows=max_rows,
                     warnings=warnings,
+                    table_names=table_names,
                 )
             elif kind == "inputs":
                 cursor = _render_inputs(
@@ -1472,6 +1485,7 @@ def _render_blocks(
                         start_row=cursor,
                         max_rows=max_rows,
                         warnings=warnings,
+                        table_names=table_names,
                     )
                     last_table_meta = meta
                     cursor = meta.get("end_row", cursor) + 2
@@ -1510,6 +1524,7 @@ def _build_workbook(spec: dict, *, max_rows: int = 5000) -> tuple[bytes, list[st
         }]
 
     used_names: set[str] = set()
+    table_names: set[str] = set()
     accent = theme.get("accent") or "1E2761"
 
     for sheet_spec in sheets:
@@ -1545,6 +1560,7 @@ def _build_workbook(spec: dict, *, max_rows: int = 5000) -> tuple[bytes, list[st
                 defaults=defaults,
                 max_rows=max_rows,
                 warnings=warnings,
+                table_names=table_names,
             )
         elif kind == "table" or sheet_spec.get("columns") or sheet_spec.get("table"):
             table = sheet_spec.get("table") or {
@@ -1569,6 +1585,7 @@ def _build_workbook(spec: dict, *, max_rows: int = 5000) -> tuple[bytes, list[st
                 start_row=cursor,
                 max_rows=max_rows,
                 warnings=warnings,
+                table_names=table_names,
             )
         elif kind == "inputs":
             _render_inputs(
@@ -1587,6 +1604,7 @@ def _build_workbook(spec: dict, *, max_rows: int = 5000) -> tuple[bytes, list[st
                 start_row=cursor,
                 max_rows=max_rows,
                 warnings=warnings,
+                table_names=table_names,
             )
         elif kind == "notes":
             _render_notes(ws, sheet_spec, theme=theme, start_row=cursor)
