@@ -1,5 +1,7 @@
 # Generate Spreadsheets — Native XLSX engine for Open WebUI
 
+> Part of **[NEURA Office](https://github.com/ianustec/neura-office)**: native Word, PowerPoint and Excel for Open WebUI.
+
 A [Open WebUI](https://github.com/open-webui/open-webui) **Tool** that generates
 **native Excel (.xlsx)** workbooks from a JSON spec produced by the model.
 It builds the file with `openpyxl`: multi-sheet workbooks, Excel Tables, live
