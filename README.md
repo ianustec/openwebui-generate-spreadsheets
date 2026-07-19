@@ -17,7 +17,7 @@ container.
 
 > License: MIT · Author: [IANUSTEC](https://ianustec.com)
 
-![Preview](assets/hero.png)
+![Preview](assets/hero-v2.png)
 
 *Demo: **Northwind FY2026 Operating Plan** — [`examples/workbook.json`](examples/workbook.json) → [`examples/demo_budget.xlsx`](examples/demo_budget.xlsx).*
 
@@ -111,11 +111,11 @@ Avoid `XLOOKUP`, `FILTER`, `UNIQUE`, `SEQUENCE` for maximum portability.
 
 | Assumptions (inputs) | P&L table |
 |---|---|
-| ![Inputs](assets/inputs.png) | ![Table](assets/table.png) |
+| ![Inputs](assets/inputs-v2.png) | ![Table](assets/table-v2.png) |
 | **By segment** | **Sales pipeline** |
-| ![Matrix](assets/matrix.png) | ![Pipeline](assets/pipeline.png) |
+| ![Matrix](assets/matrix-v2.png) | ![Pipeline](assets/pipeline-v2.png) |
 | **Dashboard (KPIs + charts)** | |
-| ![Chart](assets/chart.png) | |
+| ![Chart](assets/chart-v2.png) | |
 
 ## Valves
 
