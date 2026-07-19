@@ -1278,44 +1278,56 @@ def _render_chart(
     values = block.get("values") or block.get("data")
     datasets = block.get("datasets")
 
-    data_start_row = start_row
+    # Park the chart data island far to the right so it doesn't clutter the
+    # visible layout / screenshots (Excel still charts from those cells).
+    data_col = int(block.get("data_col") or 40)
+
     if labels and values and not datasets:
-        # Write a small data island then chart it
-        ws.cell(row=start_row, column=1, value=block.get("category_header") or "Category")
-        ws.cell(row=start_row, column=2, value=block.get("value_header") or "Value")
+        ws.cell(row=start_row, column=data_col, value=block.get("category_header") or "Category")
+        ws.cell(row=start_row, column=data_col + 1, value=block.get("value_header") or "Value")
         for i, (lab, val) in enumerate(zip(labels, values)):
-            ws.cell(row=start_row + 1 + i, column=1, value=lab)
-            ws.cell(row=start_row + 1 + i, column=2, value=_coerce_value(val, "number"))
+            ws.cell(row=start_row + 1 + i, column=data_col, value=lab)
+            ws.cell(
+                row=start_row + 1 + i,
+                column=data_col + 1,
+                value=_coerce_value(val, "number"),
+            )
         n = len(labels)
-        cats = Reference(ws, min_col=1, min_row=start_row + 1, max_row=start_row + n)
-        data = Reference(ws, min_col=2, min_row=start_row, max_row=start_row + n)
+        cats = Reference(
+            ws, min_col=data_col, min_row=start_row + 1, max_row=start_row + n,
+        )
+        data = Reference(
+            ws, min_col=data_col + 1, min_row=start_row, max_row=start_row + n,
+        )
         anchor_row = start_row
         data_end = start_row + n
     elif datasets and labels:
-        ws.cell(row=start_row, column=1, value="Category")
+        ws.cell(row=start_row, column=data_col, value="Category")
         for d_i, ds in enumerate(datasets):
             ws.cell(
                 row=start_row,
-                column=2 + d_i,
+                column=data_col + 1 + d_i,
                 value=ds.get("label") or ds.get("name") or f"Series {d_i + 1}",
             )
         for i, lab in enumerate(labels):
-            ws.cell(row=start_row + 1 + i, column=1, value=lab)
+            ws.cell(row=start_row + 1 + i, column=data_col, value=lab)
             for d_i, ds in enumerate(datasets):
                 series_data = ds.get("data") or ds.get("values") or []
                 v = series_data[i] if i < len(series_data) else None
                 ws.cell(
                     row=start_row + 1 + i,
-                    column=2 + d_i,
+                    column=data_col + 1 + d_i,
                     value=_coerce_value(v, "number"),
                 )
         n = len(labels)
-        cats = Reference(ws, min_col=1, min_row=start_row + 1, max_row=start_row + n)
+        cats = Reference(
+            ws, min_col=data_col, min_row=start_row + 1, max_row=start_row + n,
+        )
         data = Reference(
             ws,
-            min_col=2,
+            min_col=data_col + 1,
             min_row=start_row,
-            max_col=1 + len(datasets),
+            max_col=data_col + len(datasets),
             max_row=start_row + n,
         )
         data_end = start_row + n
@@ -1356,6 +1368,7 @@ def _render_chart(
             try:
                 from openpyxl.chart import DoughnutChart  # type: ignore
                 chart = DoughnutChart()
+                chart.holeSize = 50
             except Exception:
                 chart = PieChart()
         chart.add_data(data, titles_from_data=True)
@@ -1392,7 +1405,6 @@ def _render_chart(
             chart.y_axis.title = block.get("y_title")
         if block.get("x_title"):
             chart.x_axis.title = block.get("x_title")
-    # Accent-ish style
     try:
         chart.style = 10
     except Exception:
@@ -1403,10 +1415,11 @@ def _render_chart(
     chart.width = width
     chart.height = height
 
-    # Place chart to the right of data or below
-    anchor = block.get("anchor") or f"E{anchor_row}"
+    anchor = block.get("anchor") or f"A{anchor_row}"
     ws.add_chart(chart, anchor)
-    return max(data_end, anchor_row) + 2
+    # Advance layout by ~chart height in rows (data lives off to the right).
+    # Do not hide source columns — LibreOffice drops series when hidden.
+    return max(anchor_row + int(height * 1.6) + 2, start_row + 12)
 
 
 # ============================================================================

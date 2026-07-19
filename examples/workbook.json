@@ -1,25 +1,25 @@
 {
-  "title": "Q3 Budget Pack — FY 2026",
+  "title": "Northwind FY2026 Operating Plan",
   "author": "Northwind Finance",
   "template": "financial",
   "theme": {
-    "accent": "#1E2761",
+    "accent": "#1E3A5F",
     "font": "Calibri"
   },
   "sheets": [
     {
       "name": "Assumptions",
       "kind": "inputs",
-      "title": "Key assumptions",
-      "legend": "Yellow cells with blue text are inputs — edit these. Other sheets reference them with formulas.",
+      "title": "Planning assumptions",
+      "legend": "Yellow cells with blue text are editable inputs. Downstream sheets reference these values with formulas.",
       "items": [
         {
-          "label": "Revenue growth",
-          "value": 0.08,
+          "label": "Revenue growth YoY",
+          "value": 0.12,
           "format": "percent",
           "unit": "%",
-          "notes": "YoY",
-          "comment": "Source: board pack Q2"
+          "notes": "Base case",
+          "comment": "Source: board pack Q4 FY2025"
         },
         {
           "label": "Gross margin target",
@@ -28,136 +28,208 @@
           "unit": "%"
         },
         {
-          "label": "Tax rate",
+          "label": "Effective tax rate",
           "value": 0.24,
           "format": "percent",
           "unit": "%"
         },
         {
-          "label": "Headcount",
-          "value": 42,
+          "label": "Avg billable day rate",
+          "value": 850,
+          "format": "currency",
+          "unit": "USD"
+        },
+        {
+          "label": "Billable days / FTE / year",
+          "value": 180,
+          "format": "integer",
+          "unit": "days"
+        },
+        {
+          "label": "Headcount (end of year)",
+          "value": 48,
           "format": "integer",
           "unit": "FTE"
+        },
+        {
+          "label": "Fixed OpEx / month",
+          "value": 42000,
+          "format": "currency",
+          "unit": "USD"
         }
       ]
     },
     {
       "name": "P&L",
       "kind": "table",
-      "title": "Profit & Loss — quarterly",
+      "title": "Consolidated P&L — quarterly",
       "table": {
         "name": "PnL",
         "columns": [
-          { "key": "line", "header": "Line item", "width": 28 },
-          { "key": "q1", "header": "Q1", "format": "currency", "width": 14 },
-          { "key": "q2", "header": "Q2", "format": "currency", "width": 14 },
-          { "key": "q3", "header": "Q3", "format": "currency", "width": 14 },
+          { "key": "line", "header": "Line item", "width": 32 },
+          { "key": "q1", "header": "Q1", "format": "currency", "width": 13 },
+          { "key": "q2", "header": "Q2", "format": "currency", "width": 13 },
+          { "key": "q3", "header": "Q3", "format": "currency", "width": 13 },
+          { "key": "q4", "header": "Q4", "format": "currency", "width": 13 },
           {
-            "key": "total",
-            "header": "Total",
+            "key": "fy",
+            "header": "FY Total",
             "format": "currency",
             "width": 14,
-            "formula": "=SUM([{q1}]:[{q3}])"
+            "formula": "=SUM([{q1}]:[{q4}])"
           }
         ],
         "rows": [
-          { "line": "Revenue", "q1": 120000, "q2": 135000, "q3": 148000 },
-          { "line": "COGS", "q1": 48000, "q2": 52000, "q3": 56000 },
-          { "line": "Gross profit", "q1": 72000, "q2": 83000, "q3": 92000 },
-          { "line": "OpEx", "q1": 30000, "q2": 31000, "q3": 33000 },
-          { "line": "Operating income", "q1": 42000, "q2": 52000, "q3": 59000 }
+          { "line": "Software & platform revenue", "q1": 420000, "q2": 455000, "q3": 510000, "q4": 580000 },
+          { "line": "Professional services", "q1": 185000, "q2": 198000, "q3": 215000, "q4": 240000 },
+          { "line": "Marketplace & licenses", "q1": 62000, "q2": 71000, "q3": 78000, "q4": 92000 },
+          { "line": "Cost of delivery", "q1": -210000, "q2": -225000, "q3": -248000, "q4": -275000 },
+          { "line": "Cloud infrastructure", "q1": -48000, "q2": -51000, "q3": -55000, "q4": -61000 },
+          { "line": "Sales & marketing", "q1": -95000, "q2": -102000, "q3": -118000, "q4": -130000 },
+          { "line": "R&D / product", "q1": -140000, "q2": -145000, "q3": -152000, "q4": -160000 },
+          { "line": "G&A", "q1": -72000, "q2": -74000, "q3": -76000, "q4": -78000 },
+          { "line": "Depreciation & amortisation", "q1": -18000, "q2": -18000, "q3": -19000, "q4": -19000 }
         ],
         "excel_table": true,
         "freeze": "A2",
         "auto_filter": true,
-        "totals_row": false,
+        "totals_row": true,
         "conditional_formatting": [
-          { "type": "data_bar", "column": "q1", "color": "2E5AAC" },
-          { "type": "data_bar", "column": "q2", "color": "2E5AAC" },
-          { "type": "data_bar", "column": "q3", "color": "2E5AAC" }
+          { "type": "data_bar", "column": "q1", "color": "1E3A5F" },
+          { "type": "data_bar", "column": "q2", "color": "1E3A5F" },
+          { "type": "data_bar", "column": "q3", "color": "1E3A5F" },
+          { "type": "data_bar", "column": "q4", "color": "1E3A5F" },
+          { "type": "data_bar", "column": "fy", "color": "2E7D32" }
+        ]
+      }
+    },
+    {
+      "name": "By segment",
+      "kind": "matrix",
+      "title": "Revenue by segment × quarter",
+      "columns": [
+        { "key": "segment", "header": "Segment", "format": "text", "width": 22 },
+        { "key": "q1", "header": "Q1", "format": "currency", "width": 12 },
+        { "key": "q2", "header": "Q2", "format": "currency", "width": 12 },
+        { "key": "q3", "header": "Q3", "format": "currency", "width": 12 },
+        { "key": "q4", "header": "Q4", "format": "currency", "width": 12 },
+        {
+          "key": "fy",
+          "header": "FY",
+          "format": "currency",
+          "width": 13,
+          "formula": "=SUM([{q1}]:[{q4}])"
+        }
+      ],
+      "rows": [
+        { "segment": "Enterprise", "q1": 310000, "q2": 335000, "q3": 380000, "q4": 425000 },
+        { "segment": "Mid-market", "q1": 215000, "q2": 238000, "q3": 265000, "q4": 298000 },
+        { "segment": "SMB / self-serve", "q1": 92000, "q2": 101000, "q3": 112000, "q4": 128000 },
+        { "segment": "Partner channel", "q1": 50000, "q2": 50000, "q3": 46000, "q4": 61000 }
+      ],
+      "excel_table": true,
+      "conditional_formatting": [
+        { "type": "color_scale", "column": "q1" },
+        { "type": "color_scale", "column": "q2" },
+        { "type": "color_scale", "column": "q3" },
+        { "type": "color_scale", "column": "q4" },
+        { "type": "color_scale", "column": "fy" }
+      ]
+    },
+    {
+      "name": "Pipeline",
+      "kind": "table",
+      "title": "Sales pipeline — weighted",
+      "table": {
+        "name": "Pipeline",
+        "columns": [
+          { "key": "deal", "header": "Opportunity", "width": 26 },
+          { "key": "owner", "header": "Owner", "width": 14 },
+          { "key": "stage", "header": "Stage", "width": 14 },
+          { "key": "amount", "header": "Amount", "format": "currency", "width": 12 },
+          { "key": "prob", "header": "Win %", "format": "percent", "width": 10 },
+          {
+            "key": "weighted",
+            "header": "Weighted",
+            "format": "currency",
+            "width": 12,
+            "formula": "=[{amount}]*[{prob}]"
+          },
+          { "key": "close", "header": "Close", "format": "date", "width": 12 }
+        ],
+        "rows": [
+          { "deal": "Acme Corp — platform rollout", "owner": "M. Chen", "stage": "Negotiate", "amount": 280000, "prob": 0.7, "close": "2026-04-15" },
+          { "deal": "Globex AI copilot suite", "owner": "J. Patel", "stage": "Proposal", "amount": 145000, "prob": 0.45, "close": "2026-05-30" },
+          { "deal": "Initech multi-year MSA", "owner": "M. Chen", "stage": "Qualify", "amount": 420000, "prob": 0.25, "close": "2026-08-01" },
+          { "deal": "Umbrella regional expansion", "owner": "S. Okonkwo", "stage": "Negotiate", "amount": 96000, "prob": 0.65, "close": "2026-03-20" },
+          { "deal": "Stark Industries SOC2 pack", "owner": "J. Patel", "stage": "Closed Won", "amount": 72000, "prob": 1.0, "close": "2026-02-10" },
+          { "deal": "Wayne Health LLM pilot", "owner": "S. Okonkwo", "stage": "Proposal", "amount": 118000, "prob": 0.4, "close": "2026-06-15" },
+          { "deal": "Oscorp data platform", "owner": "M. Chen", "stage": "Qualify", "amount": 195000, "prob": 0.2, "close": "2026-09-01" }
+        ],
+        "excel_table": true,
+        "freeze": "A2",
+        "totals_row": true,
+        "conditional_formatting": [
+          { "type": "data_bar", "column": "weighted", "color": "2E7D32" },
+          {
+            "type": "cell_value",
+            "column": "prob",
+            "operator": "greaterThanOrEqual",
+            "value": 0.6,
+            "fill": "C8E6C9"
+          }
         ],
         "validation": [
           {
-            "column": "line",
+            "column": "stage",
             "type": "list",
-            "options": [
-              "Revenue",
-              "COGS",
-              "Gross profit",
-              "OpEx",
-              "Operating income",
-              "Other"
-            ]
+            "options": ["Qualify", "Proposal", "Negotiate", "Closed Won", "Closed Lost"]
           }
         ]
       }
     },
     {
-      "name": "By region",
-      "kind": "matrix",
-      "title": "Revenue by region",
-      "headers": ["Region", "Q1", "Q2", "Q3"],
-      "columns": [
-        { "key": "region", "header": "Region", "format": "text", "width": 18 },
-        { "key": "q1", "header": "Q1", "format": "currency" },
-        { "key": "q2", "header": "Q2", "format": "currency" },
-        { "key": "q3", "header": "Q3", "format": "currency" }
-      ],
-      "rows": [
-        { "region": "EMEA", "q1": 52000, "q2": 58000, "q3": 61000 },
-        { "region": "Americas", "q1": 40000, "q2": 45000, "q3": 51000 },
-        { "region": "APAC", "q1": 28000, "q2": 32000, "q3": 36000 }
-      ],
-      "excel_table": true
-    },
-    {
-      "name": "Charts",
+      "name": "Dashboard",
       "kind": "mixed",
       "blocks": [
         {
           "kind": "kpi_row",
-          "title": "Highlights",
+          "title": "FY2026 highlights",
           "stats": [
-            {
-              "label": "YTD revenue",
-              "value": 403000,
-              "format": "currency",
-              "change": "+12% YoY"
-            },
-            {
-              "label": "Gross margin",
-              "value": 0.61,
-              "format": "percent",
-              "change": "+2 pp"
-            },
-            {
-              "label": "Op. income",
-              "value": 153000,
-              "format": "currency"
-            }
+            { "label": "FY revenue", "value": 2417000, "format": "currency", "change": "+12% YoY" },
+            { "label": "Gross margin", "value": 0.61, "format": "percent", "change": "+2 pp" },
+            { "label": "Pipeline weighted", "value": 612100, "format": "currency", "change": "7 deals" },
+            { "label": "Headcount", "value": 48, "format": "integer", "change": "+6 FTE" }
           ]
         },
         {
           "kind": "chart",
           "chart_type": "bar",
           "title": "Revenue by quarter",
-          "labels": ["Q1", "Q2", "Q3"],
-          "values": [120000, 135000, 148000],
-          "anchor": "A8"
+          "labels": ["Q1", "Q2", "Q3", "Q4"],
+          "values": [667000, 724000, 803000, 912000],
+          "value_header": "Revenue",
+          "y_title": "USD",
+          "anchor": "A8",
+          "width": 14,
+          "height": 9
         },
         {
           "kind": "chart",
           "chart_type": "doughnut",
-          "title": "Revenue mix by region (Q3)",
-          "labels": ["EMEA", "Americas", "APAC"],
-          "values": [61000, 51000, 36000],
-          "anchor": "J8"
+          "title": "FY mix by segment",
+          "labels": ["Enterprise", "Mid-market", "SMB", "Partner"],
+          "values": [1450000, 1016000, 433000, 207000],
+          "value_header": "FY mix",
+          "anchor": "I8",
+          "width": 12,
+          "height": 9
         },
         {
           "kind": "notes",
           "level": "info",
           "title": "How to use this workbook",
-          "text": "Edit yellow input cells on the Assumptions sheet. P&L totals are live Excel formulas (=SUM). Open in Excel or LibreOffice to recalculate."
+          "text": "1) Edit yellow inputs on Assumptions. 2) P&L and Pipeline FY/Weighted columns are live Excel formulas. 3) Open in Excel or LibreOffice to recalculate cached values. Figures are illustrative for the Generate Spreadsheets demo."
         }
       ]
     }

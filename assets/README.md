@@ -1,18 +1,24 @@
 # Assets
 
-Screenshots used by the README. All are from the example workbook
-[`examples/workbook.json`](../examples/workbook.json) → [`examples/demo_budget.xlsx`](../examples/demo_budget.xlsx).
+Screenshots from the English demo workbook
+[`examples/workbook.json`](../examples/workbook.json) → [`examples/demo_budget.xlsx`](../examples/demo_budget.xlsx)
+(**Northwind FY2026 Operating Plan** — Assumptions, P&L, By segment, Pipeline, Dashboard).
 
-- `inputs.png` — Assumptions sheet (yellow input cells)
-- `table.png` — P&L with Excel Table, formulas, data bars
-- `matrix.png` — Revenue by region
-- `chart.png` — KPI row + native bar chart
-- `hero.png` — 3-panel preview banner
+| File | Sheet |
+|---|---|
+| `inputs.png` | Assumptions (yellow editable inputs) |
+| `table.png` | Consolidated P&L with Excel Table + data bars |
+| `matrix.png` | Revenue by segment × quarter (color scale) |
+| `pipeline.png` | Sales pipeline with weighted formulas + validation |
+| `chart.png` | Dashboard KPIs + bar + doughnut charts |
+| `hero.png` | 3-panel README banner |
 
 Regenerate:
 
 ```bash
 python examples/build.py
+# optional: set landscape print areas, then:
 soffice --headless --convert-to pdf examples/demo_budget.xlsx
-pdftoppm -png -r 120 demo_budget.pdf page
+pdftoppm -png -r 160 demo_budget.pdf page
+# trim + shadow each page into assets/*.png
 ```

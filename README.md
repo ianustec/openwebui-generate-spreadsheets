@@ -19,7 +19,7 @@ container.
 
 ![Preview](assets/hero.png)
 
-*Workbook generated from [`examples/workbook.json`](examples/workbook.json) → [`examples/demo_budget.xlsx`](examples/demo_budget.xlsx).*
+*Demo: **Northwind FY2026 Operating Plan** — [`examples/workbook.json`](examples/workbook.json) → [`examples/demo_budget.xlsx`](examples/demo_budget.xlsx).*
 
 ## Features
 
@@ -112,8 +112,10 @@ Avoid `XLOOKUP`, `FILTER`, `UNIQUE`, `SEQUENCE` for maximum portability.
 | Assumptions (inputs) | P&L table |
 |---|---|
 | ![Inputs](assets/inputs.png) | ![Table](assets/table.png) |
-| **By region** | **Charts + KPIs** |
-| ![Matrix](assets/matrix.png) | ![Chart](assets/chart.png) |
+| **By segment** | **Sales pipeline** |
+| ![Matrix](assets/matrix.png) | ![Pipeline](assets/pipeline.png) |
+| **Dashboard (KPIs + charts)** | |
+| ![Chart](assets/chart.png) | |
 
 ## Valves
 
